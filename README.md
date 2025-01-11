@@ -1,7 +1,7 @@
 # xyz
 
 
-Modules - 
+## Modules - 
 
-Ayushi - Skill Management, Support portal, Performance management
-Anshuman - Expense, Timesheet, Task Management
+#### Ayushi - Skill Management, Support portal, Performance management
+#### Anshuman - Expense, Timesheet, Task Management
