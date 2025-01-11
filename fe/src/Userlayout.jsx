@@ -18,7 +18,7 @@ const Userlayout = () => {
                     <CardActionArea>
                         <CardMedia
                             component="img"
-                            sx={{ height: "15rem", width: "10rem", margin: "auto" }}
+                            sx={{ height: "12rem", width: "10rem", margin: "auto" }}
                             image={`/images/${item.label}.svg`}
                             alt="green iguana"
                         />
