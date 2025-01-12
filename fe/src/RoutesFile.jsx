@@ -9,7 +9,7 @@ const RoutesFile = () => {
         <Routes>
             <Route path="/" element={<Userlayout/>} />
             <Route path="/skill" element={<LandingPageSkill/>}/>
-            <Route path="/expense" element={<LandingPageExpense/>}/>
+            <Route path="/expense/*" element={<LandingPageExpense/>}/>
         </Routes>
     </Router>
   )

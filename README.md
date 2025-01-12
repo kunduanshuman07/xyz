@@ -1,12 +1,14 @@
-# xyz
+# xyz - Xplore Your Zone
 
-# This entire application is going to be pur milestome 
+# This entire application is going to be our milestone - 2025. 
 ## Modules - 
+
+### Developers:
 
 #### Ayushi - Skill Management, Support portal, Performance management
 #### Anshuman - Expense, Timesheet, Task Management
 
-## Tools used:
-#### FrontEnd : React js, javascript,HTML,CSS, Material ui 
-#### Backend : Nodejs, Expressjs
-#### Database : MySQL, SQL
+# Tools:
+# FrontEnd : ReactJS
+# Backend : NodeJS, ExpressJS
+# Database : MySQL
