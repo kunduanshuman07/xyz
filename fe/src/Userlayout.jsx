@@ -32,8 +32,14 @@ const Userlayout = () => {
                 </Card>)
                 )}
 
-            </Box></>
+            </Box>
+             {/* <Box display="flex" justifyContent="start">
+                <Typography sx={{ textAlign: "center",fontFamily:"montserrat",paddingTop:"15rem" ,fontSize:"14px",marginLeft:"10px"}}>
 
+                This is an all in one application which helps in kickstarting the delivery of an organization.
+                </Typography>
+                </Box> */}
+                </> 
     )
 }
 
