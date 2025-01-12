@@ -3,11 +3,11 @@ import AppbarComponent from './components/AppbarComponent';
 import { Route, Routes } from 'react-router-dom';
 import OverviewPage from './pages/OverviewPage';
 import { Box } from '@mui/material';
-
+import {expenseTabs} from './utils';
 const LandingPage = () => {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
-      <AppbarComponent />
+      <AppbarComponent expenseTabs={expenseTabs}/>
       <Box
         component="main"
         sx={{

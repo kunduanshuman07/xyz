@@ -1,4 +1,9 @@
 export const expenseTabs = [
+
+    {
+        label:"Expense",
+        path:"",
+    },
     {
         label: "Overview",
         path: "/expense/overview"

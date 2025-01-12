@@ -8,7 +8,7 @@ const RoutesFile = () => {
     <Router>
         <Routes>
             <Route path="/" element={<Userlayout/>} />
-            <Route path="/skill" element={<LandingPageSkill/>}/>
+            <Route path="/skill/*" element={<LandingPageSkill/>}/>
             <Route path="/expense/*" element={<LandingPageExpense/>}/>
         </Routes>
     </Router>
