@@ -6,7 +6,7 @@ import ProgressIcon from '@mui/icons-material/Cached';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
 import MediationIcon from '@mui/icons-material/Mediation';
-import { buttons, text } from '../../theme';
+import { text } from '../../theme';
 
 const typeRenders = {
     1: {
@@ -26,17 +26,17 @@ const typeRenders = {
     },
     4: {
         text: "Total Claimed Amount",
-        color: buttons.background,
+        color: '#B6E9D6',
         icon: <AttachMoneyIcon sx={{ fontSize: "50px" }} />
     },
     5: {
         text: "Last Claim Cateogry",
-        color: "#4667DF",
+        color: "#F8B758",
         icon: <MediationIcon sx={{ fontSize: "50px" }} />
     },
     6: {
         text: "Average Processing Time",
-        color: "#9E8ED3",
+        color: "#E19C9B",
         icon: <AccessTimeFilledIcon sx={{ fontSize: "50px" }} />
     }
 }

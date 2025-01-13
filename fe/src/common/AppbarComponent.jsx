@@ -1,12 +1,20 @@
 import React, { useState } from 'react';
-import { Avatar, Box, IconButton, Typography } from '@mui/material';
-import { tabs } from '../../theme.js';
+import { Avatar, Box, IconButton, Tooltip, Typography } from '@mui/material';
+import { tabs } from '../theme.js';
 import RoofingIcon from '@mui/icons-material/Roofing';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthProvider.jsx';
 
-const AppbarComponent = ({expenseTabs}) => {
+const AppbarComponent = ({ expenseTabs }) => {
   const navigate = useNavigate();
-const [module, setModule] = useState(expenseTabs?.slice(0,1));
+  const [module, setModule] = useState(expenseTabs?.slice(0, 1));
+  const { setAuth } = useAuth();
+  const handleLogout = () => {
+    localStorage.removeItem("User");
+    setAuth(false);
+    navigate('/auth');
+  }
   return (
     <Box
       display="flex"
@@ -19,11 +27,10 @@ const [module, setModule] = useState(expenseTabs?.slice(0,1));
       zIndex={1000}
     >
       <IconButton onClick={() => navigate("/")}>
-
-        <RoofingIcon sx={{color:"#ffffff"}}/>
+        <RoofingIcon sx={{ color: "#ffffff" }} />
       </IconButton>
       <Typography color="white" fontFamily="Montserrat" margin="auto 20px" fontSize="18px">
-      {module[0]?.label}
+        {module[0]?.label}
       </Typography>
       <Box display="flex" marginLeft="auto">
         {expenseTabs?.slice(1)?.map((item, index) => (
@@ -56,6 +63,11 @@ const [module, setModule] = useState(expenseTabs?.slice(0,1));
       >
         A
       </Avatar>
+      <Tooltip title='Logout'>
+        <IconButton sx={{ marginY: "auto", marginLeft: "10px", color: 'gray' }} onClick={handleLogout}>
+          <ExitToAppIcon />
+        </IconButton>
+      </Tooltip>
     </Box>
   );
 };

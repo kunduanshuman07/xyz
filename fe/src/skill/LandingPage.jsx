@@ -1,5 +1,5 @@
 import React from 'react'
-import AppbarComponent from '../expense/components/AppbarComponent'
+import AppbarComponent from '../common/AppbarComponent'
 import { SkillTabs } from './utils'
 import { Route, Routes } from 'react-router-dom'
 import Overview from './pages/Overview'
