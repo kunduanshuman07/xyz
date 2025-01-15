@@ -21,7 +21,7 @@ app.use(cors({
     origin: '*',
     methods: ['GET', 'POST', 'PATCH', 'DELETE']
 }));
-
+app.use("/attachments", Express.static("public/attachments"));
 app.use('/xyz/v1', xyzRoutes);
 
 server.listen(PORT, () => {

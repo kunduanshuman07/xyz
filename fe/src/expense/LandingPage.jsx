@@ -3,12 +3,13 @@ import AppbarComponent from '../common/AppbarComponent';
 import { Route, Routes } from 'react-router-dom';
 import OverviewPage from './pages/OverviewPage';
 import { Box } from '@mui/material';
-import {expenseTabs} from './utils';
+import { expenseTabs } from './utils';
 import CreateExpensePage from './pages/CreateExpensePage';
+import ApprovalPage from './pages/ApprovalPage';
 const LandingPage = () => {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
-      <AppbarComponent expenseTabs={expenseTabs}/>
+      <AppbarComponent expenseTabs={expenseTabs} />
       <Box
         component="main"
         sx={{
@@ -21,6 +22,7 @@ const LandingPage = () => {
         <Routes>
           <Route path="/overview" element={<OverviewPage />} />
           <Route path="/create" element={<CreateExpensePage />} />
+          <Route path="/approvals" element={<ApprovalPage />} />
         </Routes>
       </Box>
     </Box>
