@@ -1,5 +1,5 @@
-import * as React from 'react';
-import DataGridComponent from '../../common/DataGridComponent';
+import React from 'react'
+import DataGridComponent from "../../common/DataGridComponent";
 
 const columns = [
     { field: 'id', headerName: 'ID', width: 90 },
@@ -44,8 +44,10 @@ const rows = [
     { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
 ];
 
-export default function ExpenseOverviewGrid() {
+const ApprovalPage = () => {
     return (
-        <DataGridComponent rows={rows} columns={columns} height={400} />
-    );
+        <DataGridComponent rows={rows} columns={columns} height={'85vh'} />
+    )
 }
+
+export default ApprovalPage
