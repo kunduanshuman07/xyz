@@ -2,15 +2,7 @@ import React, { useState } from 'react'
 import Box from '@mui/material/Box';
 import { styled } from "@mui/material/styles";
 
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import {
-    DataGridPremium,
-    GRID_ROW_GROUPING_SINGLE_GROUPING_FIELD,
-    GridToolbar,
-    useGridApiRef,
-    useKeepGroupedColumnsHidden,
-} from '@mui/x-data-grid-premium';
-import { useDemoData } from '@mui/x-data-grid-generator';
+import { DataGrid } from '@mui/x-data-grid';
 import { useEffect } from 'react';
 import MuiAccordionSummary from "@mui/material/AccordionSummary";
 import MuiAccordionDetails from "@mui/material/AccordionDetails";
