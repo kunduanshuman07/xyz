@@ -1,0 +1,54 @@
+dept
+: 
+"IT"
+designation
+: 
+"Software Engineer"
+dob
+: 
+"1990-05-14T18:30:00.000Z"
+doj
+: 
+"2019-12-31T18:30:00.000Z"
+email
+: 
+"john.doe@email.com"
+empcode
+: 
+"EC001"
+empid
+: 
+"E001"
+empname
+: 
+"John Doe"
+grade
+: 
+"A"
+location
+: 
+"NY"
+phone
+: 
+"555-1234"
+projallocationenddate
+: 
+"2022-12-30T18:30:00.000Z"
+projallocationstartdate
+: 
+"2020-01-14T18:30:00.000Z"
+projid
+: 
+"P001"
+projname
+: 
+"Project Alpha"
+rmid
+: 
+"E005"
+rmname
+: 
+"Jane Smith"
+yearofexp
+: 
+5
