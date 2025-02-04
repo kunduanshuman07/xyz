@@ -30,12 +30,12 @@ const typeRenders = {
         icon: <AttachMoneyIcon sx={{ fontSize: "50px" }} />
     },
     5: {
-        text: "Last Claim Cateogry",
+        text: "Drafts",
         color: "#F8B758",
         icon: <MediationIcon sx={{ fontSize: "50px" }} />
     },
     6: {
-        text: "Average Processing Time",
+        text: "Avg Expense Processing Time",
         color: "#E19C9B",
         icon: <AccessTimeFilledIcon sx={{ fontSize: "50px" }} />
     }
@@ -54,7 +54,7 @@ const DashboardTile = ({ type, data, currency }) => {
                     {typeRenders[type].text}
                 </Typography>
                 <Typography fontFamily='Montserrat' fontWeight={'bold'} sx={{ fontSize: "20px" }}>
-                    {type === 4 && currency} {data}{type === 4 ? ".00" : type === 6 ? " hrs" : ""}
+                    {type === 4 && currency} {data}{type === 4 ? "" : type === 6 ? " hrs" : ""}
                 </Typography>
             </Box>
             <IconButton sx={{ margin: "auto 0px auto auto", color: typeRenders[type].color }}>

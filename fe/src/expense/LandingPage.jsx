@@ -6,6 +6,8 @@ import { Box } from '@mui/material';
 import { expenseTabs } from './utils';
 import CreateExpensePage from './pages/CreateExpensePage';
 import ApprovalPage from './pages/ApprovalPage';
+import ExpenseViewDialog from './components/ExpenseViewDialog';
+import DraftsPage from './pages/DraftsPage';
 const LandingPage = () => {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
@@ -22,7 +24,11 @@ const LandingPage = () => {
         <Routes>
           <Route path="/overview" element={<OverviewPage />} />
           <Route path="/create" element={<CreateExpensePage />} />
+          <Route path="/create/:data" element={<CreateExpensePage />} />
+          <Route path="/drafts" element={<DraftsPage />} />
           <Route path="/approvals" element={<ApprovalPage />} />
+          <Route path="/approvals/:id" element={<ExpenseViewDialog />} />
+          <Route path="/overview/:id" element={<ExpenseViewDialog />} />
         </Routes>
       </Box>
     </Box>

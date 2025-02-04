@@ -1,25 +1,24 @@
-export const expenseTabs = [
-
+export const taskboardTabs = [
     {
-        label: "Expense",
+        label: "",
         path: "",
     },
     {
         label: "Overview",
-        path: "/expense/overview"
+        path: "/taskboard/overview"
     },
     {
-        label: "Add/Edit Expense",
-        path: "/expense/create"
+        label: "Active Sprint",
+        path: "/taskboard/active-sprint"
     },
     {
-        label: "Drafts",
-        path: "/expense/drafts"
+        label: "All Sprints",
+        path: "/taskboard/all-sprints"
     },
     {
-        label: "Approvals",
-        path: "/expense/approvals"
-    },
+        label: "Issues/Epics",
+        path: "/taskboard/issues"
+    }, 
 ]
 
 export const currencies = [

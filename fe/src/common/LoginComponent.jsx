@@ -19,7 +19,7 @@ const LoginComponent = () => {
         try {
             const response = await axios.post(`${BASE_URL}/auth/login`, { email, password });
             if (response?.status === 200) {
-                localStorage.setItem("User", JSON.stringify(response?.data?.user));
+                sessionStorage.setItem("User", JSON.stringify(response?.data?.user));
                 setAuth(true);
                 navigate('/');
             }

@@ -10,11 +10,11 @@ import { currencies } from "../utils"
 import { axiosInstance } from '../../hooks/useApiCall';
 import { useNavigate } from 'react-router-dom';
 
-const ExpenseSubmitComp = ({ data }) => {
-    const user = JSON.parse(localStorage.getItem("User"));
+const ExpenseSubmitComp = ({ data, item }) => {
+    const user = JSON.parse(sessionStorage.getItem("User"));
     const fileInputRef = useRef(null);
     const [declaration, setdeclaration] = useState(false);
-    const [files, setFiles] = useState([]);
+    const [files, setFiles] = useState(item ? item?.attachmentid : []);
     const [loading, setloading] = useState(false);
     const [error, seterror] = useState(false);
     const [snackmsg, setsnackmsg] = useState('');
@@ -29,17 +29,19 @@ const ExpenseSubmitComp = ({ data }) => {
     });
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
-        purpose: '',
-        category: '',
-        expensename: '',
+        purpose: item?.combinationid?.split('-')[0] || '',
+        category: item?.combinationid?.split('-')[1] || '',
+        expensename: item?.expensename || '',
         project: `${user.projid}-${user.projname}` || '',
         projid: `${user.projid}`,
         projname: `${user.projname}`,
-        currency: '',
-        amount: '',
-        recieptdate: '',
-        empid: `${user.empid}`
+        currency: currencies.find((i) => i.id === item?.currencyid)?.id || '',
+        amount: item?.amount || '',
+        recieptdate: item?.recieptdate ? new Date(item.recieptdate).toISOString().split('T')[0] : '',
+        empid: `${user.empid}`,
+        rmid: `${user.rmid}`,
     });
+
     const uniquePurposes = [...new Set(data?.map((item) => item.purposeid))]
         .map((purposeid) => data.find((item) => item.purposeid === purposeid));
 
@@ -61,9 +63,8 @@ const ExpenseSubmitComp = ({ data }) => {
 
     const handleFileChange = (e) => {
         setFiles(e.target.files);
-        console.log(files.FileList)
     }
-    
+
 
     const handleValidation = () => {
         let isValid = true;
@@ -128,10 +129,10 @@ const ExpenseSubmitComp = ({ data }) => {
         }
 
         finalFormData.append('combinationid', combinationid);
-
+        finalFormData.append('expenseid', item?.expenseid);
         try {
             const response = await axiosInstance({
-                url: '/expense/submit-expense',
+                url: item ? '/expense/submit-saved-expense' : '/expense/submit-expense',
                 method: 'POST',
                 data: finalFormData
             });
@@ -149,7 +150,47 @@ const ExpenseSubmitComp = ({ data }) => {
         }
 
     }
+    const handleSaveDraft = async () => {
+        if (!handleValidation()) {
+            return;
+        }
+        setloading(true);
+        seterror(false);
+        setsnackmsg('');
+        const finalFormData = new FormData();
+        const row = data?.find(item => item.categoryid === formData.category && item.purposeid === formData.purpose);
+        const combinationid = row?.combinationid;
 
+        for (const key in formData) {
+            finalFormData.append(key, formData[key]);
+        }
+
+        for (let i = 0; i < files.length; i++) {
+            finalFormData.append('files', files[i]);
+        }
+
+        finalFormData.append('combinationid', combinationid);
+        finalFormData.append('expenseid', item?.expenseid);
+        try {
+            const response = await axiosInstance({
+                url: item ? '/expense/update-expense' : '/expense/save-expense',
+                method: 'POST',
+                data: finalFormData
+            });
+            if (response?.status === 200) {
+                navigate(item ? '/expense/drafts' : '/expense/drafts');
+            }
+            else {
+                setsnackmsg(item ? 'Error submitting expense' : 'Error saving expense');
+            }
+        } catch (error) {
+            seterror(true);
+            setsnackmsg(error.message);
+        } finally {
+            setloading(false);
+        }
+
+    }
     return (
         <>
             {fields.map((field, index) => (
@@ -199,8 +240,8 @@ const ExpenseSubmitComp = ({ data }) => {
             <input type="file" multiple onChange={handleFileChange} hidden ref={fileInputRef} />
             <Grid size={12} display={'flex'}>
                 {fieldErrors['files'] ? <Typography sx={{ margin: "2px 10px", fontSize: "12px", fontFamily: "Montserrat", color: 'red', fontWeight: "bold" }}> {fieldErrors['files']} </Typography> : <Typography sx={{ margin: "2px 10px", fontSize: "12px", fontFamily: "Montserrat", color: 'gray', fontWeight: "bold" }}>Uploaded Attachments : </Typography>}
-                {files?.FileList?.map((file, index) => (
-                    <Typography sx={{ margin: "2px 10px", fontSize: "12px", fontFamily: "Montserrat", color: 'gray', fontWeight: "bold" }} key={index}>{file?.File?.name}</Typography>
+                {Array.from(files).map((file, index) => (
+                    <Typography sx={{ margin: "2px 10px", fontSize: "12px", fontFamily: "Montserrat", color: 'gray', fontWeight: "bold" }} key={index}>{!file?.name ? file?.split('_').slice(2).join('-') : file?.name}</Typography>
                 ))}
             </Grid>
             <Grid size={12} display={'flex'}>
@@ -209,7 +250,7 @@ const ExpenseSubmitComp = ({ data }) => {
             </Grid>
             <Grid size={12} display={'flex'}>
                 <Box display={'flex'} marginLeft={"auto"}>
-                    <Button variant='contained' sx={{ textTransform: "none", margin: "10px 10px 0px 10px", borderRadius: "8px", bgcolor: buttons.background, boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)" }} startIcon={<BookmarkIcon />}>Save</Button>
+                    <Button variant='contained' sx={{ textTransform: "none", margin: "10px 10px 0px 10px", borderRadius: "8px", bgcolor: buttons.background, boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)" }} startIcon={<BookmarkIcon />} onClick={handleSaveDraft}>Save</Button>
                     <Button variant='contained' sx={{ textTransform: "none", margin: "10px 10px 0px 10px", borderRadius: "8px", bgcolor: buttons.background, boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)" }} startIcon={<PublishIcon />} disabled={!declaration} onClick={handleSubmitExpense}>Submit</Button>
                 </Box>
             </Grid>

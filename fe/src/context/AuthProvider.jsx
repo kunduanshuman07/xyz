@@ -9,7 +9,7 @@ export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
 
     const checkUser = () => {
-        const user = localStorage.getItem("User");
+        const user = sessionStorage.getItem("User");
         if (user) {
             setAuth(true);
         }

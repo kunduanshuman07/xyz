@@ -1,51 +1,52 @@
 import * as React from 'react';
 import DataGridComponent from '../../common/DataGridComponent';
+import { action, approvalstages, currencies } from '../utils';
+import { expenseOverviewColumns } from '../gridColumns';
+import { IconButton } from '@mui/material';
+import { buttons } from '../../theme';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import { useNavigate } from 'react-router-dom';
 
-const columns = [
-    { field: 'id', headerName: 'ID', width: 90 },
-    {
-        field: 'firstName',
-        headerName: 'First name',
-        width: 150,
-        editable: true,
-    },
-    {
-        field: 'lastName',
-        headerName: 'Last name',
-        width: 150,
-        editable: true,
-    },
-    {
-        field: 'age',
-        headerName: 'Age',
-        type: 'number',
-        width: 110,
-        editable: true,
-    },
-    {
-        field: 'fullName',
-        headerName: 'Full name',
-        description: 'This column has a value getter and is not sortable.',
-        sortable: false,
-        width: 160,
-        valueGetter: (value, row) => `${row.firstName || ''} ${row.lastName || ''}`,
-    },
-];
+export default function ExpenseOverviewGrid({ data }) {
+    const [rows, setrows] = React.useState([]);
+    const navigate = useNavigate();
+    React.useEffect(() => {
+        const formattedRows = data?.map((item, index) => ({
+            id: index + 1,
+            expenseid: item.expenseid,
+            project: `${item?.projid}-${item?.projname}`,
+            expensename: item?.expensename,
+            amount: `${currencies.find(i => i.id === item?.currencyid)?.currency} ${item?.amount}`,
+            date: new Date(item.raisedate).toLocaleDateString(),
+            status: `${action.find(i => i.id === item?.action)?.label}`,
+            stage: `${approvalstages.find(i => i.id === item?.approvalstageid)?.label}`
+        }))
+        setrows(formattedRows);
+    }, [data])
 
-const rows = [
-    { id: 1, lastName: 'Snow', firstName: 'Jon', age: 14 },
-    { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 31 },
-    { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 31 },
-    { id: 4, lastName: 'Stark', firstName: 'Arya', age: 11 },
-    { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-    { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
-    { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-    { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-    { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
-];
+    const handleViewClick = (row) => {
+        navigate(`/expense/overview/${row.expenseid}+overview`)
+    }
 
-export default function ExpenseOverviewGrid() {
+    const columns = expenseOverviewColumns.map((col) => {
+        if (col.field === 'view') {
+            return {
+                ...col,
+                renderCell: (params) => (
+                    <IconButton
+                        size="small"
+                        sx={{ color: buttons.background }}
+                        onClick={() => handleViewClick(params.row)}
+                    >
+                        <VisibilityIcon />
+                    </IconButton>
+                ),
+            };
+        }
+        return col;
+    });
+
     return (
-        <DataGridComponent rows={rows} columns={columns} height={400} />
+        <DataGridComponent rows={rows} columns={columns} height={500} />
     );
 }

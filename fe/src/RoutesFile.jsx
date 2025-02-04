@@ -3,6 +3,7 @@ import { Routes, Route, BrowserRouter as Router, Navigate } from 'react-router-d
 import Userlayout from './Userlayout';
 import LandingPageSkill from './skill/LandingPage';
 import LandingPageExpense from './expense/LandingPage';
+import LandingPageTaskboard from './taskboard/LandingPage';
 import LoginComponent from './common/LoginComponent';
 import { useAuth } from './context/AuthProvider';
 import { LinearProgress } from '@mui/material';
@@ -28,6 +29,11 @@ const RoutesFile = () => {
         <Route path="/expense/*" element={
           <Suspense fallback={<LinearProgress color='info' />}>
             {auth ? <LandingPageExpense /> : <Navigate to="/auth" replace />}
+          </Suspense>
+        } />
+        <Route path="/taskboard/*" element={
+          <Suspense fallback={<LinearProgress color='info' />}>
+            {auth ? <LandingPageTaskboard /> : <Navigate to="/auth" replace />}
           </Suspense>
         } />
       </Routes>

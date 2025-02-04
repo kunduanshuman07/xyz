@@ -1,7 +1,7 @@
 import Express from 'express';
 import authRoutes from './auth.route.js';
 import expenseRoutes from './expense.route.js';
-
+import taskboardRoutes from "./taskboard.route.js"
 const router = Express.Router();
 
 const defaultRoutes = [
@@ -12,6 +12,10 @@ const defaultRoutes = [
     {
         path: '/expense',
         route: expenseRoutes
+    },
+    {
+        path: '/taskboard',
+        route: taskboardRoutes
     },
 ]
 

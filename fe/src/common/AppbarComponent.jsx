@@ -10,8 +10,9 @@ const AppbarComponent = ({ expenseTabs }) => {
   const navigate = useNavigate();
   const [module, setModule] = useState(expenseTabs?.slice(0, 1));
   const { setAuth } = useAuth();
+  const user = JSON.parse(sessionStorage.getItem("User"));
   const handleLogout = () => {
-    localStorage.removeItem("User");
+    sessionStorage.removeItem("User");
     setAuth(false);
     navigate('/auth');
   }
@@ -44,7 +45,7 @@ const AppbarComponent = ({ expenseTabs }) => {
             borderRadius="8px"
             fontFamily="Montserrat"
             sx={{ cursor: 'pointer' }}
-            bgcolor={item.path === window.location.pathname ? tabs.active : ''}
+            bgcolor={window.location.pathname.startsWith(item.path) ? tabs.active : ''}
             onClick={() => navigate(item.path)}
           >
             {item.label}
@@ -61,7 +62,7 @@ const AppbarComponent = ({ expenseTabs }) => {
           fontFamily: 'Montserrat',
         }}
       >
-        A
+        {user?.empname[0]}
       </Avatar>
       <Tooltip title='Logout'>
         <IconButton sx={{ marginY: "auto", marginLeft: "10px", color: 'gray' }} onClick={handleLogout}>
