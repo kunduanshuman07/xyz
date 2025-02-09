@@ -7,6 +7,7 @@ import CreateSprintDialog from '../components/CreateSprintDialog'
 
 const BacklogPage = () => {
   const [open, setOpen] = useState(false);
+  const [sprints, setsprints] = useState([]);
   return (
     <div>
       <Box display={'flex'}>
@@ -18,8 +19,8 @@ const BacklogPage = () => {
         <AssigneeFilterSelect />
         <Button sx={{ textTransform: "none", marginTop: "5px", textAlign: "left", marginLeft: "auto", marginY: "10px" }} color='info' onClick={() => setOpen(true)} variant='contained' size='small'>+ New Sprint</Button>
       </Box>
-      <AccordianComponent />
-      {open && <CreateSprintDialog open={open} setOpen={setOpen}/>}
+      <AccordianComponent sprints={sprints} setsprints={setsprints}/>
+      {open && <CreateSprintDialog open={open} setOpen={setOpen} sprints={sprints} setsprints={setsprints}/>}
     </div>
   )
 }

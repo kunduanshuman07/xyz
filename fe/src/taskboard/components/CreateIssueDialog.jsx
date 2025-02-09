@@ -1,13 +1,17 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import { Button, IconButton, TextField, Typography } from '@mui/material';
+import { Button, IconButton, MenuItem, TextField, Typography } from '@mui/material';
 import { buttons } from '../../theme';
 import CloseIcon from "@mui/icons-material/CloseSharp";
 import Grid from "@mui/material/Grid2";
+import { priorities } from '../utils';
 
-const CreateIssueDialog = ({ open, setOpen }) => {
+const CreateIssueDialog = ({ open, setOpen, handleCreateIssue }) => {
+  const [issuename, setissuename] = useState('');
+  const [relversion, setrelversion] = useState('');
+  const [priority, setpriority] = useState();
   const handleCloseDialog = () => {
     setOpen(false);
   }
@@ -22,11 +26,13 @@ const CreateIssueDialog = ({ open, setOpen }) => {
         </IconButton>
       </DialogTitle>
       <DialogContent sx={{ display: "flex", flexDirection: "column" }}>
-        <Grid container spacing={2}>
-          <Grid size={4}>
+        <Grid container spacing={2} sx={{ marginTop: "10px" }}>
+          <Grid size={12}>
             <TextField
               placeholder={"Name"}
-              label={""}
+              value={issuename}
+              onChange={(e) => setissuename(e.target.value)}
+              label={"Name"}
               fullWidth
               required
               size="small"
@@ -42,30 +48,14 @@ const CreateIssueDialog = ({ open, setOpen }) => {
               }}
             />
           </Grid>
-          <Grid size={8}>
-            <TextField
-              placeholder={"Description"}
-              label={""}
-              fullWidth
-              required
-              size="small"
-              sx={{
-                ".css-1blp12k-MuiInputBase-root-MuiOutlinedInput-root": {
-                  fontSize: "0.8rem",
-                  fontFamily: "Montserrat",
-                },
-                ".css-1kfabtt-MuiFormLabel-root-MuiInputLabel-root": {
-                  fontSize: "0.8rem"
-                },
-                fontSize: "0.8rem"
-              }}
-            />
-          </Grid>
-          <Grid size={4}>
+          <Grid size={6}>
             <TextField
               placeholder={"Priority"}
-              label={""}
+              label={"Priority"}
+              value={priority}
+              onChange={(e) => setpriority(e.target.value)}
               fullWidth
+              select
               required
               size="small"
               sx={{
@@ -78,107 +68,18 @@ const CreateIssueDialog = ({ open, setOpen }) => {
                 },
                 fontSize: "0.8rem"
               }}
-            />
-          </Grid>
-          <Grid size={4}>
-            <TextField
-              placeholder={"Epic"}
-              label={""}
-              fullWidth
-              required
-              size="small"
-              sx={{
-                ".css-1blp12k-MuiInputBase-root-MuiOutlinedInput-root": {
-                  fontSize: "0.8rem",
-                  fontFamily: "Montserrat",
-                },
-                ".css-1kfabtt-MuiFormLabel-root-MuiInputLabel-root": {
-                  fontSize: "0.8rem"
-                },
-                fontSize: "0.8rem"
-              }}
-            />
-          </Grid>
-          <Grid size={4}>
-            <TextField
-              placeholder={"Sprint"}
-              label={""}
-              fullWidth
-              required
-              size="small"
-              sx={{
-                ".css-1blp12k-MuiInputBase-root-MuiOutlinedInput-root": {
-                  fontSize: "0.8rem",
-                  fontFamily: "Montserrat",
-                },
-                ".css-1kfabtt-MuiFormLabel-root-MuiInputLabel-root": {
-                  fontSize: "0.8rem"
-                },
-                fontSize: "0.8rem"
-              }}
-            />
+            >
+              {priorities?.map((option, index) => (
+                <MenuItem value={option?.id} key={index}>{option?.label}</MenuItem>
+              ))}
+            </TextField>
           </Grid>
           <Grid size={6}>
             <TextField
               placeholder={"Release Version"}
-              label={""}
-              fullWidth
-              required
-              size="small"
-              sx={{
-                ".css-1blp12k-MuiInputBase-root-MuiOutlinedInput-root": {
-                  fontSize: "0.8rem",
-                  fontFamily: "Montserrat",
-                },
-                ".css-1kfabtt-MuiFormLabel-root-MuiInputLabel-root": {
-                  fontSize: "0.8rem"
-                },
-                fontSize: "0.8rem"
-              }}
-            />
-          </Grid>
-          <Grid size={6}>
-            <TextField
-              placeholder={"Assignee"}
-              label={""}
-              fullWidth
-              required
-              size="small"
-              sx={{
-                ".css-1blp12k-MuiInputBase-root-MuiOutlinedInput-root": {
-                  fontSize: "0.8rem",
-                  fontFamily: "Montserrat",
-                },
-                ".css-1kfabtt-MuiFormLabel-root-MuiInputLabel-root": {
-                  fontSize: "0.8rem"
-                },
-                fontSize: "0.8rem"
-              }}
-            />
-          </Grid>
-          <Grid size={6}>
-            <TextField
-              placeholder={"Credits"}
-              label={""}
-              fullWidth
-              required
-              size="small"
-              sx={{
-                ".css-1blp12k-MuiInputBase-root-MuiOutlinedInput-root": {
-                  fontSize: "0.8rem",
-                  fontFamily: "Montserrat",
-                },
-                ".css-1kfabtt-MuiFormLabel-root-MuiInputLabel-root": {
-                  fontSize: "0.8rem"
-                },
-                fontSize: "0.8rem"
-              }}
-            />
-          </Grid>
-          <Grid size={6}>
-            <TextField
-              placeholder={"Original Estimate (days)"}
-              label={""}
+              label={"Release Version"}
+              value={relversion}
+              onChange={(e) => setrelversion(e.target.value)}
               fullWidth
               required
               size="small"
@@ -195,9 +96,9 @@ const CreateIssueDialog = ({ open, setOpen }) => {
             />
           </Grid>
         </Grid>
-        <Button variant='contained' sx={{ textTransform: "none", marginX: "auto", marginY: "20px", borderRadius: "8px", bgcolor: buttons.background }}>Create Issue</Button>
+        <Button variant='contained' sx={{ textTransform: "none", marginX: "auto", marginY: "20px", borderRadius: "8px", bgcolor: buttons.background }} onClick={() => handleCreateIssue({ issuename, relversion, priority })}>Create Issue</Button>
       </DialogContent>
-    </Dialog>
+    </Dialog >
   )
 }
 

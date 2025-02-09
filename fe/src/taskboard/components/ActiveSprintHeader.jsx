@@ -16,7 +16,7 @@ const ActiveSprintHeader = () => {
         placeholder='Search'
         style={{ background: '#F2F2F2', border: "none", lineHeight: "22px", width: "200px", fontSize: "12px", padding: "5px 20px", borderRadius: "8px", color: text.primary, margin: "auto 20px", fontFamily: "Montserrat" }}
       />
-      <AssigneeFilterSelect/>
+      <AssigneeFilterSelect width={300}/>
       <Button startIcon={<AccessTimeIcon />} size='small' sx={{ textTransform: "none", marginLeft: "auto", fontSize: "12px", color: "gray", fontFamily: "montserrat" }}>
         2 days
       </Button>
