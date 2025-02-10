@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Grid from "@mui/material/Grid2";
-import { Avatar, Box, Button, Typography } from '@mui/material';
+import { Avatar, Backdrop, Box, Button, CircularProgress, Typography } from '@mui/material';
 import { tabs, text } from '../../theme';
 import BugReportIcon from '@mui/icons-material/BugReport';
 import EmergencyIcon from '@mui/icons-material/Emergency';
@@ -79,7 +79,6 @@ const TaskGrid = ({ id, label, data, handleFetchTasks }) => {
     const [assigneeLabels, setassigneelabels] = useState([])
     const [viewissue, setviewissue] = useState(false);
     const [viewissuedata, setviewissuedata] = useState();
-
     const handleFetchIssues = async () => {
         try {
             const response = await axiosInstance({
@@ -194,8 +193,6 @@ const TaskGrid = ({ id, label, data, handleFetchTasks }) => {
         }
     }
     const onDropTask = async (task, newStatus) => {
-        console.log(task, newStatus);
-        task.status = newStatus;
         try {
             await axiosInstance({
                 url: "/taskboard/update-issue",
@@ -216,6 +213,7 @@ const TaskGrid = ({ id, label, data, handleFetchTasks }) => {
         handleFetchEpics();
         handleFetchAssignees();
         handleFetchTasks();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
     const handleViewIssue = (task) => {
         setviewissuedata(task);
@@ -253,12 +251,15 @@ const TaskGrid = ({ id, label, data, handleFetchTasks }) => {
                     epics={epics}
                     assignees={assignees}
                     epiclabels={epiclabels}
-                    assigneeLabels={assigneeLabels}
+                    assigneelabels={assigneeLabels}
                     handleUpdate={handleUpdateIssue}
                     sprintlabels={sprintlabels}
                     sprints={sprints}
                 />
             )}
+            <Backdrop open={loading}>
+                <CircularProgress sx={{ color: "white" }} />
+            </Backdrop>
         </Grid>
     )
 }

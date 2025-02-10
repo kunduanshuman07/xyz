@@ -43,8 +43,8 @@ const TaskListComponent = () => {
     return (
         <Grid sx={{ marginTop: "20px" }} container spacing={2}>
             {items?.map((x, index) => (
-                <DndProvider backend={HTML5Backend}>
-                    <TaskGrid label={x.label} key={index} id={x.id} data={tasks} handleFetchTasks={handleFetchIssues} />
+                <DndProvider backend={HTML5Backend} key={index}>
+                    <TaskGrid label={x.label} key={index} id={x.id} data={tasks} handleFetchTasks={handleFetchIssues}/>
                 </DndProvider>
             ))}
             <Backdrop open={loading}>

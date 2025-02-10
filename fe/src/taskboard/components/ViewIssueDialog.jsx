@@ -2,14 +2,16 @@ import React, { useEffect, useState } from "react";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import { Avatar, Box, Button, IconButton, TextField, Typography } from "@mui/material";
+import { Box, Button, IconButton, Typography } from "@mui/material";
 import CloseIcon from "@mui/icons-material/CloseSharp";
 import Grid from "@mui/material/Grid2";
 import { issuestatus, priorities } from "../utils";
 import EditableField from "./EditableField";
 import TextAreaComp from "./TextAreaComp";
-import { buttons, text } from "../../theme";
+import { text } from "../../theme";
 import { axiosInstance } from "../../hooks/useApiCall";
+import DisplayCommentsComp from "./DisplayCommentsComp";
+import CommentsFieldComp from "./CommentsFieldComp";
 
 const ViewIssueDialog = ({ open, setOpen, data, epics, assignees, epiclabels, assigneelabels, handleUpdate, sprintlabels, sprints }) => {
     const user = JSON.parse(sessionStorage.getItem("User"));
@@ -25,7 +27,6 @@ const ViewIssueDialog = ({ open, setOpen, data, epics, assignees, epiclabels, as
     const [comments, setComments] = useState(data?.comments);
     const [comment, setComment] = useState();
     const [loading, setLoading] = useState();
-
     const statuslabels = {
         0: "Setup",
         1: "Inprogress",
@@ -83,7 +84,6 @@ const ViewIssueDialog = ({ open, setOpen, data, epics, assignees, epiclabels, as
                 method: "POST",
                 data: { issueid: data?.id }
             })
-            console.log(data);
             setComments(response?.data);
             setComment('');
         } catch (error) {
@@ -104,9 +104,39 @@ const ViewIssueDialog = ({ open, setOpen, data, epics, assignees, epiclabels, as
         } catch (error) {
 
         } finally {
-            // setOpen(false);
         }
     }
+
+    const handleDeleteComment = async (commentid) => {
+        setLoading(true);
+        try {
+            await axiosInstance({
+                url: "/taskboard/delete-comment",
+                method: "POST",
+                data: { commentid: commentid, issueid: data?.id }
+            })
+            fetchComments();
+        } catch (error) {
+
+        } finally {
+        }
+    }
+
+    const handleEditComment = async (commentid, newComment) => {
+        setLoading(true);
+        try {
+            await axiosInstance({
+                url: "/taskboard/edit-comment",
+                method: "POST",
+                data: { commentid: commentid, issueid: data?.id, newcomment: newComment }
+            })
+            fetchComments();
+        } catch (error) {
+
+        } finally {
+        }
+    }
+
     useEffect(() => {
         fetchComments();
     }, [])
@@ -264,7 +294,6 @@ const ViewIssueDialog = ({ open, setOpen, data, epics, assignees, epiclabels, as
                                 size="small"
                                 sx={{
                                     padding: "1px 5px",
-                                    // bgcolor: "whitesmoke",
                                     textTransform: "none",
                                     fontSize: "10px",
                                     fontWeight: "bold",
@@ -274,57 +303,9 @@ const ViewIssueDialog = ({ open, setOpen, data, epics, assignees, epiclabels, as
                                 Comments
                             </Button>
                         </Box>
-                        <Box display={'flex'}>
-                            <Avatar sx={{ width: "20px", height: "20px", marginY: "auto", fontSize: "8px", bgcolor: buttons.background }}>
-                                {user?.empname?.split(' ')[0][0]}{user?.empname?.split(' ')[1][0]}
-                            </Avatar>
-                            <TextField
-                                size="small"
-                                placeholder="Add Comments"
-                                value={comment}
-                                onChange={(e) => setComment(e.target.value)}
-                                fullWidth
-                                sx={{
-                                    backgroundColor: "whitesmoke",
-                                    borderRadius: "10px",
-                                    marginY: "auto",
-                                    marginLeft: "5px",
-                                    ".css-1blp12k-MuiInputBase-root-MuiOutlinedInput-root": {
-                                        fontSize: "0.5rem",
-                                        fontFamily: "Montserrat",
-                                        fontWeight: "bold",
-                                    },
-                                    ".css-1pzfmz2-MuiInputBase-input-MuiOutlinedInput-input": {
-                                        height: "0.5rem",
-                                    },
-                                }}
-                            />
-                            <Button size="small" color="secondary" sx={{ textTransform: "none", fontFamily: "montserrat" }} onClick={handleAddComment}>Add</Button>
-                        </Box>
+                        <CommentsFieldComp user={user} comment={comment} setComment={setComment} handleAddComment={handleAddComment} />
                         {comments?.map((x, index) => (
-                            <Box display={'flex'} marginTop={'12px'}>
-                                <Avatar sx={{ width: "30px", height: "30px", marginY: "auto", fontSize: "10px" }}>
-                                    {x?.empname?.split(' ')[0][0]}{x?.empname?.split(' ')[1][0]}
-                                </Avatar>
-                                <Box display={'flex'} flexDirection={'column'}>
-                                    <Typography sx={{ fontSize: "12px", fontWeight: "bold", fontFamily: "montserrat", color: "gray", marginLeft: "10px" }}>{x?.empname}  <span style={{fontSize: "8px", marginLeft: "10px", fontWeight: "bold"}}>{new Date(x?.date).toLocaleTimeString()}</span></Typography>
-                                    <Typography sx={{
-                                        fontSize: "10px", fontFamily: "montserrat", marginLeft: "10px", wordWrap: "break-word",
-                                        whiteSpace: "normal",
-                                        marginY: "5px",
-                                        maxWidth: "450px",
-                                    }}>{x?.comment}</Typography>
-                                    <Box display={'flex'} marginLeft={'10px'}>
-                                        <Typography sx={{ fontFamily: "montserrat", fontSize: "10px", marginY: "auto" }}>{new Date(x?.date).toLocaleDateString()}</Typography>
-                                        {user?.empid === x?.empid &&
-                                            <Box display={'flex'}>
-                                                <Button size="small" sx={{ fontSize: "10px", textTransform: "none", fontFamily: "montserrat", marginY: "auto" }}>Edit</Button>
-                                                <Button size="small" sx={{ fontSize: "10px", textTransform: "none", fontFamily: "montserrat", marginY: "auto" }}>Delete</Button>
-                                            </Box>
-                                        }
-                                    </Box>
-                                </Box>
-                            </Box>
+                            <DisplayCommentsComp x={x} user={user} key={index} handleDelete={handleDeleteComment} handleEditComment={handleEditComment}/>
                         ))}
                     </Grid>
                     <Grid size={4} sx={{ display: "flex", flexDirection: "column", marginLeft: "auto" }}>
@@ -344,6 +325,7 @@ const ViewIssueDialog = ({ open, setOpen, data, epics, assignees, epiclabels, as
                                 woSelect={x.woSelect}
                                 func={x.setterfunction}
                                 keyid={x.keyid}
+                                key={index}
                             />
                         ))}
                     </Grid>

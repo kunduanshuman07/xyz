@@ -1,5 +1,5 @@
 import Express from "express";
-import { addComment, createEpic, createNewIssue, createNewIssueWithSprint, createNewSprint, fetchComments, fetchRunningSprintTasks, getAllAssignees, getAllEpics, getAllIssues, getAllSprints, updateIssue, updateIssuesBulk } from "../controllers/taskboard.controller.js";
+import { addComment, createEpic, createNewIssue, createNewIssueWithSprint, createNewSprint, deleteComment, editComment, fetchComments, fetchRunningSprintTasks, getAllAssignees, getAllEpics, getAllIssues, getAllSprints, updateIssue, updateIssuesBulk } from "../controllers/taskboard.controller.js";
 
 const router = Express.Router();
 
@@ -15,6 +15,8 @@ router.post('/update-issue', updateIssue);
 router.post('/update-issues-bulk', updateIssuesBulk);
 router.post('/create-sprint', createNewSprint);
 router.post('/add-comment', addComment);
+router.post('/delete-comment', deleteComment);
+router.post('/edit-comment', editComment);
 router.get('/active-sprint-tasks', fetchRunningSprintTasks);
 
 

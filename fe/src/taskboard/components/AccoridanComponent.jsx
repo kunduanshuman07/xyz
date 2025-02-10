@@ -167,6 +167,9 @@ export default function AccordianComponent({ sprints, setsprints }) {
         handleFetchAssignees();
         handleFetchSprints();
     }, [])
+    React.useEffect(() => {
+        handleFetchIssues();
+    }, [sprints])
     const sprintstatus = {
         0: "Completed",
         1: "Active",
@@ -188,7 +191,7 @@ export default function AccordianComponent({ sprints, setsprints }) {
                     <AccordionDetails>
                         {issues?.map((issue, index) => (
                             issue?.sprintid === sprint.id &&
-                            <AccordianContent data={issue} key={index} setviewissue={setviewissue} setviewissuedata={setviewissuedata} setSelectedIssues={setselectedIssues} comp={true}/>
+                            <AccordianContent data={issue} key={index} setviewissue={setviewissue} setviewissuedata={setviewissuedata} setSelectedIssues={setselectedIssues} comp={true} />
                         ))}
                     </AccordionDetails>
                 </Accordion>
@@ -200,6 +203,9 @@ export default function AccordianComponent({ sprints, setsprints }) {
             <Backdrop open={loading}>
                 <CircularProgress sx={{ color: "white" }} />
             </Backdrop>
+            {sprints?.length === 0 &&
+                <Typography sx={{textAlign: "center", fontWeight: "bold", fontFamily: "montserrat", color: "gray"}}>No Sprints in this Project, start by creating one.</Typography>
+            }
         </div>
     );
 }

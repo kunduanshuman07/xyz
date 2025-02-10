@@ -342,8 +342,6 @@ export const fetchRunningSprintTasks = async (req, res) => {
 export const addComment = async (req, res) => {
     const { empid, empname, comment, issueid } = req.body;
     const date = new Date().toISOString();
-    const newComment = { empid, empname, comment, date };
-
     try {
         const selectQuery = `SELECT comments FROM issues WHERE id = ?`;
         db.query(selectQuery, [issueid], (selectError, results) => {
@@ -353,8 +351,8 @@ export const addComment = async (req, res) => {
 
             let comments = [];
             const dbComments = results[0]?.comments;
-
-            // Handle different types of storage (string vs JSON object)
+            const newCommentId = results[0]?.comments === null ? 1 : results[0]?.comments?.length + 1;
+            const newComment = { empid, empname, comment, date, newCommentId };
             if (dbComments) {
                 try {
                     comments = typeof dbComments === "string" ? JSON.parse(dbComments) : dbComments;
@@ -379,10 +377,6 @@ export const addComment = async (req, res) => {
     }
 };
 
-
-
-
-
 export const fetchComments = async (req, res) => {
     const { issueid } = req.body;
 
@@ -396,7 +390,6 @@ export const fetchComments = async (req, res) => {
             let comments = [];
             const dbComments = results[0]?.comments;
 
-            // Handle string or object JSON storage
             if (dbComments) {
                 try {
                     comments = typeof dbComments === "string" ? JSON.parse(dbComments) : dbComments;
@@ -404,11 +397,84 @@ export const fetchComments = async (req, res) => {
                     return res.status(500).send({ error: "Corrupted comments data" });
                 }
             }
-
+            comments.sort((a, b) => new Date(b.date) - new Date(a.date));
             res.status(200).send(comments);
         });
     } catch (error) {
         console.error("Unexpected Error:", error);
         res.status(500).send({ error: "An unexpected error occurred" });
+    }
+};
+
+export const deleteComment = async (req, res) => {
+    const { commentid, issueid } = req.body;
+    try {
+        const selectQuery = `SELECT comments FROM issues WHERE id = ?`;
+        db.query(selectQuery, [issueid], (selectError, results) => {
+            if (selectError) {
+                return res.status(500).send({ error: "Failed to fetch comments" });
+            }
+
+            let comments = [];
+            const dbComments = results[0]?.comments;
+
+            if (dbComments) {
+                try {
+                    comments = typeof dbComments === "string" ? JSON.parse(dbComments) : dbComments;
+                } catch (parseError) {
+                    return res.status(500).send({ error: "Corrupted comment data" });
+                }
+            }
+            comments = comments?.filter((comment) => comment.newCommentId !== commentid);
+
+            const updateQuery = `UPDATE issues SET comments = ? WHERE id = ?`;
+            db.query(updateQuery, [JSON.stringify(comments), issueid], (updateError) => {
+                if (updateError) {
+                    return res.status(500).send({ error: "Failed to delete comment" });
+                }
+                res.status(200).send({ message: "Comment deleted successfully" });
+            });
+        });
+    } catch (error) {
+        console.error("Unexpected Error:", error);
+        res.status(500).send({ error: "An error occurred" });
+    }
+};
+
+export const editComment = async (req, res) => {
+    const { commentid, issueid, newComment } = req.body;
+    try {
+        const selectQuery = `SELECT comments FROM issues WHERE id = ?`;
+        db.query(selectQuery, [issueid], (selectError, results) => {
+            if (selectError) {
+                return res.status(500).send({ error: "Failed to fetch comments" });
+            }
+
+            let comments = [];
+            const dbComments = results[0]?.comments;
+
+            if (dbComments) {
+                try {
+                    comments = typeof dbComments === "string" ? JSON.parse(dbComments) : dbComments;
+                } catch (parseError) {
+                    return res.status(500).send({ error: "Corrupted comment data" });
+                }
+            }
+            const updationData = comments?.filter((comment) => comment.newCommentId === commentid);
+            const date = new Date().toISOString();
+            const updatedComment = { empid: updationData?.empid, empname: updationData?.empname, comment: newComment, date: date, newCommentId: commentid }
+            comments = comments?.filter((comment) => comment.newCommentId !== commentid);
+            comments.push(updatedComment);
+            const updateQuery = `UPDATE issues SET comments = ? WHERE id = ?`;
+            db.query(updateQuery, [JSON.stringify(comments), issueid], (updateError) => {
+                if (updateError) {
+                    return res.status(500).send({ error: "Failed to update comment" });
+                }
+                res.status(200).send({ message: "Comment updated successfully" });
+            });
+        });
+    } catch (error) {
+        console.error("Unexpected Error:", error);
+        res.status(500).send({ error: "An error occurred" });
     }
 };

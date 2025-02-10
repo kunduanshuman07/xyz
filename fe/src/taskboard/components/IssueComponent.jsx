@@ -161,7 +161,13 @@ const IssueComponent = () => {
                         <Button sx={{ color: "white", textTransform: "none", ":hover": { color: "gray" } }} onClick={toggleDrawer('right', true)}>Bulk Edit</Button>
                     </Box>}
             </Box>
-            <Typography sx={{ fontFamily: "montserrat", fontSize: "10px", color: "gray", fontWeight: "bold", marginLeft: "auto", marginRight: "10px" }}>*Click to view details or edit</Typography>
+            {issues?.length === 0 ?
+                <Typography sx={{ textAlign: "center", fontWeight: "bold", fontFamily: "montserrat", color: "gray", marginTop: "30px" }}>No Issues in this Project, start by creating one.</Typography>
+                :
+                <>
+                    <Typography sx={{ fontFamily: "montserrat", fontSize: "10px", color: "gray", fontWeight: "bold", marginLeft: "auto", marginRight: "10px" }}>*Click to view details or edit</Typography>
+                </>
+            }
             <Box display={'flex'} flexDirection={'column'} sx={{ maxHeight: "450px", overflowY: "auto" }} padding="5px" borderRadius={'10px'} >
                 {issues?.map((issue, index) => (
                     <AccordianContent data={issue} key={index} setviewissue={setviewissue} setviewissuedata={setviewissuedata} setSelectedIssues={setselectedIssues} />
@@ -173,6 +179,7 @@ const IssueComponent = () => {
             </Backdrop>
             {viewissue && <ViewIssueDialog open={viewissue} setOpen={setviewissue} data={viewissuedata} epics={epics} assignees={assignees} epiclabels={epiclabels} assigneelabels={assigneeLabels} handleUpdate={handleUpdateIssue} sprintlabels={sprintlabels} sprints={sprints} />}
             {state?.right && <BulkEditDrawer toggleDrawer={toggleDrawer} state={state} anchor='right' assigneelist={assignees} selectedIds={selectedIssues} priorities={priorities} epics={epics} statuses={issuestatus} sprints={sprints} handleFetchIssues={handleFetchIssues} setSelectedIssues={setselectedIssues} setState={setState} />}
+
         </div>
     )
 }

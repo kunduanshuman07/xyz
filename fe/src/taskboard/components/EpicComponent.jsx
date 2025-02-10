@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import AccordianContent from '../components/EpicAccordian'
-import { Backdrop, Box, Button, CircularProgress } from '@mui/material'
+import { Backdrop, Box, Button, CircularProgress, Typography } from '@mui/material'
 import CreateEpicDialog from './CreateEpicDialog'
 import { axiosInstance } from "../../hooks/useApiCall";
 
@@ -42,6 +42,10 @@ const EpicComponent = ({ comp }) => {
     return (
         <div style={{ display: "flex", flexDirection: "column" }}>
             <Button sx={{ textTransform: "none", marginTop: "5px", textAlign: "left", marginRight: "auto", marginY: "10px" }} color='info' onClick={() => setOpen(true)}>+ Create a new Epic</Button>
+            {epics?.length === 0 &&
+                <Typography sx={{ textAlign: "center", fontWeight: "bold", fontFamily: "montserrat", color: "gray", marginTop: "20px", fontSize: "12px" }}>No Epics in this Project, start by creating one.</Typography>
+            }
+
             {/* <Typography sx={{ fontFamily: "montserrat", fontSize: "10px", color: "gray", fontWeight: "bold", marginLeft: "auto", marginRight: "10px" }}>*Click to view details</Typography> */}
             <Box display={'flex'} flexDirection={'column'} sx={{ maxHeight: comp ? "330px" : "490px", overflowY: "auto" }} padding="5px" borderRadius={'10px'} >
                 {epics?.map((epic, index) => (
