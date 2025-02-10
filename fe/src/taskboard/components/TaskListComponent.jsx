@@ -3,6 +3,8 @@ import Grid from "@mui/material/Grid2";
 import TaskGrid from "./TaskGrid";
 import { axiosInstance } from '../../hooks/useApiCall';
 import { Backdrop, CircularProgress } from '@mui/material';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
 const items = [
     {
@@ -41,7 +43,9 @@ const TaskListComponent = () => {
     return (
         <Grid sx={{ marginTop: "20px" }} container spacing={2}>
             {items?.map((x, index) => (
-                <TaskGrid label={x.label} key={index} id={x.id} data={tasks} handleFetchTasks={handleFetchIssues}/>
+                <DndProvider backend={HTML5Backend}>
+                    <TaskGrid label={x.label} key={index} id={x.id} data={tasks} handleFetchTasks={handleFetchIssues} />
+                </DndProvider>
             ))}
             <Backdrop open={loading}>
                 <CircularProgress sx={{ color: "white" }} />

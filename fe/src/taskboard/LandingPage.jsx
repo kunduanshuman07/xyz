@@ -7,7 +7,7 @@ import OverViewPage from './pages/OverViewPage';
 import ActiveSprintPage from './pages/ActiveSprintPage';
 import AllSprintsPage from './pages/AllSprintsPage';
 import IssuesPage from './pages/IssuesPage';
-
+import ReactDND from "./components/ReactDND"
 const LandingPage = () => {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
@@ -26,6 +26,7 @@ const LandingPage = () => {
           <Route path='/active-sprint' element={<ActiveSprintPage />} />
           <Route path='/all-sprints' element={<AllSprintsPage />} />
           <Route path='/issues' element={<IssuesPage />} />
+          <Route path='/checker' element={<ReactDND />} />
         </Routes>
       </Box>
     </Box>

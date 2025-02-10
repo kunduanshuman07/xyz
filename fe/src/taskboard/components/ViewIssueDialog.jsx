@@ -5,7 +5,6 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { Avatar, Box, Button, IconButton, TextField, Typography } from "@mui/material";
 import CloseIcon from "@mui/icons-material/CloseSharp";
 import Grid from "@mui/material/Grid2";
-import "react-quill/dist/quill.snow.css";
 import { issuestatus, priorities } from "../utils";
 import EditableField from "./EditableField";
 import TextAreaComp from "./TextAreaComp";
