@@ -7,7 +7,7 @@ import { buttons } from '../../theme';
 import CloseIcon from "@mui/icons-material/CloseSharp";
 import NewSprint from './NewSprint';
 
-const CreateSprintDialog = ({ open, setOpen, sprints, setsprints }) => {
+const CreateSprintDialog = ({ open, setOpen }) => {
     const handleCloseDialog = () => {
         setOpen(false);
     }
@@ -15,14 +15,14 @@ const CreateSprintDialog = ({ open, setOpen, sprints, setsprints }) => {
         <Dialog maxWidth="lg" fullWidth open={open} onClose={() => setOpen(false)}>
             <DialogTitle display='flex'>
                 <Typography sx={{ fontSize: "16px", color: buttons.background, fontFamily: "montserrat", marginY: "auto", fontWeight: "bold" }}>
-                    Create a new Sprint
+                    Plan a new Sprint
                 </Typography>
                 <IconButton size='small' sx={{ marginLeft: "auto" }} onClick={handleCloseDialog}>
                     <CloseIcon />
                 </IconButton>
             </DialogTitle>
             <DialogContent sx={{display: "flex", flexDirection: 'column'}}>
-                <NewSprint handleCloseDialog={handleCloseDialog} sprints={sprints} setsprints={setsprints}/>
+                <NewSprint handleCloseDialog={handleCloseDialog} />
             </DialogContent>
         </Dialog>
     )

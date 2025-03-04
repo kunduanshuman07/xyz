@@ -198,16 +198,17 @@ export const updateIssue = async (req, res) => {
 
 
 export const createNewSprint = async (req, res) => {
-    const { sprintname, startdate, enddate, issuelist } = req.body;
+    const { sprintname, issuelist } = req.body;
     const issueIds = issuelist?.map((issue, index) => {
         return issue.id;
     })
+    const date = new Date();
     try {
         const insertSprintQuery = `
-        INSERT INTO sprints (projid, sprintname, startdate, enddate, status)
-        VALUES (?, ?, ?, ?, ?)
+        INSERT INTO sprints (projid, sprintname, status, created)
+        VALUES (?, ?, ?, ?)
       `;
-        const sprintValues = ['P001', sprintname, startdate, enddate, 2];
+        const sprintValues = ['P001', sprintname, 2, date];
 
         db.query(insertSprintQuery, sprintValues, (insertError, insertResults) => {
             if (insertError) {
@@ -478,3 +479,57 @@ export const editComment = async (req, res) => {
         res.status(500).send({ error: "An error occurred" });
     }
 };
+
+export const startSprint = async (req, res) => {
+    const { sprintid } = req.body;
+
+    try {
+        const values = [sprintid];
+
+        const sqlQuery = `
+        UPDATE sprints
+        SET status = 1, startdate = NOW()
+        WHERE id IN (?)
+      `;
+
+        db.query(sqlQuery, values, (error, results) => {
+            if (error) {
+                logger.error("Database error: " + error.message);
+                return res.status(500).send({ error: "Failed to update Start sprint" });
+            }
+
+            logger.success();
+            res.status(200).send({ message: "Sprint Started successfully" });
+        });
+    } catch (error) {
+        console.error("Unexpected Error:", error);
+        res.status(500).send({ error: "An unexpected error occurred" });
+    }
+}
+
+export const endSprint = async (req, res) => {
+    const { sprintid } = req.body;
+
+    try {
+        const values = [sprintid];
+
+        const sqlQuery = `
+        UPDATE sprints
+        SET status = 0, enddate = NOW()
+        WHERE id IN (?)
+      `;
+
+        db.query(sqlQuery, values, (error, results) => {
+            if (error) {
+                logger.error("Database error: " + error.message);
+                return res.status(500).send({ error: "Failed to update end sprint" });
+            }
+
+            logger.success();
+            res.status(200).send({ message: "Sprint completed successfully" });
+        });
+    } catch (error) {
+        console.error("Unexpected Error:", error);
+        res.status(500).send({ error: "An unexpected error occurred" });
+    }
+}

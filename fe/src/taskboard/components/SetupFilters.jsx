@@ -1,10 +1,9 @@
 import React from 'react'
 import { Box, Checkbox, Chip, FormControl, IconButton, InputLabel, ListItemText, MenuItem, OutlinedInput, Select, Tooltip } from "@mui/material"
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
-import { useTaskboard } from '../../context/TaskboardProvider';
 import { useAssigneeFilter } from "../../context/AssigneFilterProvider";
 import ClearIcon from '@mui/icons-material/Clear';
-import { text } from '../../theme';
+import { issuestatus } from '../utils';
 const ITEM_HEIGHT = 40;
 const ITEM_PADDING_TOP = 2;
 const MenuProps = {
@@ -16,40 +15,30 @@ const MenuProps = {
     },
 };
 
-const AssigneeFilterSelect = () => {
-    const { personName, setPersonName, search, setSearch } = useAssigneeFilter();
-    const { assignees, assigneeLabels } = useTaskboard();
+const SetupFilters = () => {
+    const { statusFilters, setStatusFilters } = useAssigneeFilter();
     const handleChange = (event) => {
         const {
             target: { value },
         } = event;
-        setPersonName(
+        setStatusFilters(
             typeof value === 'string' ? value.split(',').reverse() : [...value].reverse()
         );
     };
+    const statuses = {
+        "0": "Setup",
+        "1": "Inprogress",
+        "2": "Done"
+    }
     return (
         <Box display={'flex'}>
-            <input
-                type='text'
-                placeholder='Search Tasks'
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                style={{ background: '#F2F2F2', border: "none", lineHeight: "22px", width: "200px", fontSize: "12px", padding: "5px 20px", borderRadius: "8px", color: text.primary, margin: "auto 5px", fontFamily: "Montserrat" }}
-            />
-            {search &&
-                <Tooltip title='Clear Search'>
-                    <IconButton sx={{ margin: "auto 2px" }} size='small' onClick={() => setSearch('')}>
-                        <ClearIcon sx={{ fontSize: "12px" }} />
-                    </IconButton>
-                </Tooltip>
-            }
-            <FormControl sx={{ width: 300, marginY: "auto", marginX: "10px" }} size='small'>
-                <InputLabel id="demo-multiple-checkbox-label" sx={{ fontSize: "12px", fontFamily: "montserrat" }}>Assignee</InputLabel>
+            <FormControl sx={{ width: 200, marginY: "auto", marginX: "10px" }} size='small'>
+                <InputLabel id="demo-multiple-checkbox-label" sx={{ fontSize: "12px", fontFamily: "montserrat" }}>Status</InputLabel>
                 <Select
                     labelId="demo-multiple-checkbox-label"
                     id="demo-multiple-checkbox"
                     multiple
-                    value={personName}
+                    value={statusFilters}
                     onChange={handleChange}
                     input={<OutlinedInput label="Assignee" />}
                     sx={{
@@ -71,15 +60,15 @@ const AssigneeFilterSelect = () => {
                             }}
                         >
                             {selected.map((value) => (
-                                <Chip key={value} label={assigneeLabels[value]} sx={{ fontFamily: "montserrat", fontSize: "8px", height: "18px" }} />
+                                <Chip key={value} label={statuses[value]} sx={{ fontFamily: "montserrat", fontSize: "8px", height: "18px" }} />
                             ))}
                         </Box>
                     )}
                     MenuProps={MenuProps}
                 >
-                    {assignees?.map((name) => (
+                    {issuestatus?.map((name) => (
                         <MenuItem key={name.id} value={name.id} sx={{ fontSize: "10px" }}>
-                            <Checkbox checked={personName.includes(name.id)} size='small' checkedIcon={<AssignmentTurnedInIcon />} />
+                            <Checkbox checked={statusFilters.includes(name.id)} size='small' checkedIcon={<AssignmentTurnedInIcon />} />
                             <ListItemText primary={name.label} sx={{
                                 fontSize: "10px",
                                 ".css-rizt0-MuiTypography-root": {
@@ -90,9 +79,9 @@ const AssigneeFilterSelect = () => {
                     ))}
                 </Select>
             </FormControl>
-            {personName?.length !== 0 &&
+            {statusFilters?.length !== 0 &&
                 <Tooltip title='Clear assignee filter'>
-                    <IconButton sx={{ margin: "auto 5px" }} size='small' onClick={() => setPersonName([])}>
+                    <IconButton sx={{ margin: "auto 5px" }} size='small' onClick={() => setStatusFilters([])}>
                         <ClearIcon sx={{ fontSize: "12px" }} />
                     </IconButton>
                 </Tooltip>
@@ -101,4 +90,4 @@ const AssigneeFilterSelect = () => {
     )
 }
 
-export default AssigneeFilterSelect
+export default SetupFilters;

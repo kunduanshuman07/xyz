@@ -12,8 +12,19 @@ import { text } from "../../theme";
 import { axiosInstance } from "../../hooks/useApiCall";
 import DisplayCommentsComp from "./DisplayCommentsComp";
 import CommentsFieldComp from "./CommentsFieldComp";
+import { useTaskboard } from "../../context/TaskboardProvider";
 
-const ViewIssueDialog = ({ open, setOpen, data, epics, assignees, epiclabels, assigneelabels, handleUpdate, sprintlabels, sprints }) => {
+const ViewIssueDialog = ({ open, setOpen, data }) => {
+    const { 
+            sprintArray,
+            sprintLabels,
+            epics,
+            epicLabels,
+            assignees,
+            assigneeLabels,
+            setLoading,
+            updateIssue
+         } = useTaskboard();
     const user = JSON.parse(sessionStorage.getItem("User"));
     const [priority, setpriority] = useState(data?.priority);
     const [status, setstatus] = useState(data?.status);
@@ -26,7 +37,7 @@ const ViewIssueDialog = ({ open, setOpen, data, epics, assignees, epiclabels, as
     const [description, setDescription] = useState(data?.issue_desc);
     const [comments, setComments] = useState(data?.comments);
     const [comment, setComment] = useState();
-    const [loading, setLoading] = useState();
+    
     const statuslabels = {
         0: "Setup",
         1: "Inprogress",
@@ -68,12 +79,12 @@ const ViewIssueDialog = ({ open, setOpen, data, epics, assignees, epiclabels, as
 
     const handleValueChange = async (e, func, key, togglemode) => {
         func(e.target.value);
-        await handleUpdate({ key: key, value: e.target.value, issueid: data?.id });
+        await updateIssue({ key: key, value: e.target.value, issueid: data?.id });
         handleEditToggle(togglemode);
     }
 
     const handleValueChangeWOSelect = async ({ value, key }) => {
-        await handleUpdate({ key: key, value: value, issueid: data?.id });
+        await updateIssue({ key: key, value: value, issueid: data?.id });
         handleEditToggle(toggleModes[key]);
     };
     const fetchComments = async () => {
@@ -89,7 +100,7 @@ const ViewIssueDialog = ({ open, setOpen, data, epics, assignees, epiclabels, as
         } catch (error) {
 
         } finally {
-            // setOpen(false);
+            setLoading(false);
         }
     }
     const handleAddComment = async () => {
@@ -167,7 +178,7 @@ const ViewIssueDialog = ({ open, setOpen, data, epics, assignees, epiclabels, as
             label: "Assignee",
             value: assignee,
             options: assignees,
-            textdisplay: assigneelabels[assignee],
+            textdisplay: assigneeLabels[assignee],
             setterfunction: setassignee,
             toggleMode: 'assignee',
             select: true,
@@ -177,8 +188,8 @@ const ViewIssueDialog = ({ open, setOpen, data, epics, assignees, epiclabels, as
         {
             label: "Sprint",
             value: sprint,
-            options: sprints,
-            textdisplay: sprintlabels[sprint],
+            options: sprintArray,
+            textdisplay: sprintLabels[sprint],
             setterfunction: setsprint,
             toggleMode: 'sprint',
             select: true,
@@ -189,7 +200,7 @@ const ViewIssueDialog = ({ open, setOpen, data, epics, assignees, epiclabels, as
             label: "Epic",
             value: epic,
             options: epics,
-            textdisplay: epiclabels[epic],
+            textdisplay: epicLabels[epic],
             setterfunction: setepic,
             toggleMode: 'epic',
             select: true,

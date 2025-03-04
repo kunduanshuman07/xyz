@@ -42,31 +42,31 @@ const AccordianContent = ({ data, setviewissue, setviewissuedata, setSelectedIss
             {!comp && <Checkbox size='small' checked={isChecked} onChange={handleIssueSelection} />}
             <Box display={'flex'} width={'100%'} onClick={handleViewIssue}>
                 <Button startIcon={<BugReportIcon sx={{ fontSize: "10px" }} />} size='small' sx={{ textTransform: "none", fontSize: "10px", fontWeight: "bold", fontFamily: "montserrat" }} color='warning'>{data?.projid} - {data?.id}</Button>
-                <Typography sx={{ fontFamily: "montserrat", fontSize: "10px", margin: "auto auto auto 10px", width: "40%" }}>
+                <Typography sx={{ fontFamily: "montserrat", fontSize: "10px", margin: "auto 0px", width: "450px" }}>
                     {data?.issuename?.length > 70 ? `${data?.issuename?.slice(0, 70)}...` : data?.issuename}
                 </Typography>
                 <Tooltip title='Status'>
-                    <Typography sx={{ bgcolor: "skyblue", padding: "2px 5px", color: "white", borderRadius: "4px", fontSize: "10px", fontFamily: "montserrat", fontWeight: "bold", margin: "auto 10px"}}>{statuslabels[data?.status]}</Typography>
+                    <Typography sx={{ bgcolor: "skyblue", padding: "2px 5px", color: "white", borderRadius: "4px", fontSize: "10px", fontFamily: "montserrat", fontWeight: "bold", margin: "auto 10px", width: "70px", textAlign: "center"}}>{statuslabels[data?.status]}</Typography>
                 </Tooltip>
-                <Tooltip title='Sprint'>
-                    <Typography sx={{ bgcolor: "purple", padding: "2px 5px", color: "white", borderRadius: "4px", fontSize: "10px", fontFamily: "montserrat", fontWeight: "bold", margin: "auto 10px", }}>{data?.sprintname}</Typography>
+                <Tooltip title={data?.sprintname|| 'Sprint'}>
+                    <Typography sx={{ bgcolor: "purple", padding: "2px 5px", color: "white", borderRadius: "4px", fontSize: "10px", fontFamily: "montserrat", fontWeight: "bold", margin: "auto 10px", width: "70px", textAlign: "center" }}>{data?.sprintname?.length > 10 ? `${data?.sprintname?.slice(0, 10)}...` : data?.sprintname}</Typography>
                 </Tooltip>
-                <Tooltip title='Epic'>
-                    <Typography sx={{ bgcolor: "blueviolet", padding: "2px 5px", color: "white", borderRadius: "4px", fontSize: "10px", fontFamily: "montserrat", fontWeight: "bold", margin: "auto 10px" }}>{data?.epicname}</Typography>
+                <Tooltip title={data?.epicname || 'Epic'}>
+                    <Typography sx={{ bgcolor: "blueviolet", padding: "2px 5px", color: "white", borderRadius: "4px", fontSize: "10px", fontFamily: "montserrat", fontWeight: "bold", margin: "auto 10px", width: "70px", textAlign: "center" }}>{data?.epicname?.length > 10 ? `${data?.epicname?.slice(0, 10)}...` : data?.epicname}</Typography>
                 </Tooltip>
-                <Tooltip title='Release Version'>
-                    <Typography sx={{ bgcolor: "green", padding: "2px 5px", color: "white", borderRadius: "4px", fontSize: "10px", fontFamily: "montserrat", fontWeight: "bold", margin: "auto 10px" }}>{data?.relversion}</Typography>
+                <Tooltip title={data?.relversion || 'Release Version'}>
+                    <Typography sx={{ bgcolor: "green", padding: "2px 5px", color: "white", borderRadius: "4px", fontSize: "10px", fontFamily: "montserrat", fontWeight: "bold", margin: "auto 10px", width: "70px", textAlign: "center" }}>{data?.relversion?.length > 10 ? `${data?.relversion?.slice(0, 10)}...` : data?.relversion}</Typography>
                 </Tooltip>
-                <Tooltip title='Estimated Time'>
-                    <Typography sx={{ fontSize: "10px", fontFamily: "montserrat", marginY: "auto", marginLeft: "auto", marginRight: "10px" }}>{data?.orig_estimate}</Typography>
+                <Tooltip title={'Credits/Points'}>
+                    <Typography sx={{ fontSize: "10px", fontFamily: "montserrat", marginY: "auto", marginLeft: "auto", marginRight: "10px", width: "20px", textAlign: "center" }}>{data?.credits|| '-'}</Typography>
                 </Tooltip>
                 <Tooltip title={`${priorityIcons[data?.priority]?.title} Priority`}>
                     {priorityIcons[data?.priority]?.icon}
                 </Tooltip>
-                <Tooltip title='Assignee'>
+                <Tooltip title={data?.empname || 'Assignee'}>
                     {!data?.empid ? (
-                        <Typography sx={{ fontFamily: "montserrat", fontWeight: "bold", fontSize: "8px", color: "gray", margin: "auto 5px" }}>
-                            Unassigned
+                        <Typography sx={{ fontFamily: "montserrat", fontWeight: "bold", fontSize: "8px", color: "gray", margin: "auto 5px", width: "20px", height: "20px", textAlign: "center" }}>
+                            -
                         </Typography>
                     ) : (
                         <Avatar sx={{ width: "20px", height: "20px", fontSize: "8px", margin: "auto 5px", fontWeight: "bold", fontFamily: "montserrat", bgcolor: tabs.background }}>

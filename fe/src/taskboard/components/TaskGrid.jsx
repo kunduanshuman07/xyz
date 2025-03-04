@@ -6,17 +6,17 @@ import BugReportIcon from '@mui/icons-material/BugReport';
 import EmergencyIcon from '@mui/icons-material/Emergency';
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
 import LowPriorityIcon from '@mui/icons-material/LowPriority';
-import CreateIssueDialog from './CreateIssueDialog';
 import { axiosInstance } from '../../hooks/useApiCall';
 import ViewIssueDialog from './ViewIssueDialog';
-
 import { useDrag, useDrop } from 'react-dnd';
+import { useTaskboard } from '../../context/TaskboardProvider';
+import { useAssigneeFilter } from '../../context/AssigneFilterProvider';
 
 const ItemTypes = {
     TASK: 'task',
 };
 
-const TaskCard = ({ task, onDropTask, priorityIcons, handleViewIssue }) => {
+const TaskCard = ({ task, priorityIcons, handleViewIssue }) => {
     const [{ isDragging }, drag] = useDrag(() => ({
         type: ItemTypes.TASK,
         item: { task },
@@ -56,7 +56,7 @@ const TaskCard = ({ task, onDropTask, priorityIcons, handleViewIssue }) => {
     );
 };
 
-const TaskGrid = ({ id, label, data, handleFetchTasks }) => {
+const TaskGrid = ({ id, label }) => {
     const priorityIcons = {
         0: { icon: <PriorityHighIcon sx={{ fontSize: "16px", color: "red", margin: "auto 5px" }} />, title: "High" },
         1: { icon: <EmergencyIcon sx={{ fontSize: "16px", color: "yellow", margin: "auto 5px" }} />, title: "Medium" },
@@ -68,130 +68,17 @@ const TaskGrid = ({ id, label, data, handleFetchTasks }) => {
         drop: (item) => onDropTask(item.task, id),
     }));
 
-    const [open, setOpen] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const [issues, setIssues] = useState([]);
-    const [sprints, setsprints] = useState([]);
-    const [sprintlabels, setsprintlabels] = useState({});
-    const [epics, setEpics] = useState({});
-    const [epiclabels, setepiclabels] = useState([]);
-    const [assignees, setAssignees] = useState({});
-    const [assigneeLabels, setassigneelabels] = useState([])
     const [viewissue, setviewissue] = useState(false);
     const [viewissuedata, setviewissuedata] = useState();
-    const handleFetchIssues = async () => {
-        try {
-            const response = await axiosInstance({
-                url: "/taskboard/get-issues",
-                method: "GET",
-            })
-            setIssues(response?.data?.results);
-            handleFetchTasks();
-        } catch (error) {
-
-        } finally {
-            setLoading(false);
-        }
-    }
-    const handleFetchEpics = async () => {
-        try {
-            const response = await axiosInstance({
-                url: "/taskboard/get-epics",
-                method: "GET",
-            })
-            const formattedData = response?.data?.results?.reduce((acc, result) => {
-                acc[result?.id] = result?.epicname;
-                return acc;
-            }, {});
-            const epicData = response?.data?.results?.map((result, index) => ({
-                id: result?.id,
-                label: result?.epicname
-            }))
-            setepiclabels(formattedData);
-            setEpics(epicData);
-        } catch (error) {
-
-        } finally {
-            setLoading(false);
-        }
-    }
-    const handleFetchAssignees = async () => {
-        try {
-            const response = await axiosInstance({
-                url: "/taskboard/get-assignees",
-                method: "GET",
-            })
-            const formattedData = response?.data?.results?.reduce((acc, result) => {
-                acc[result?.empid] = result?.empname;
-                return acc;
-            }, {});
-            const assigneeData = response?.data?.results?.map((result, index) => ({
-                id: result?.empid,
-                label: result?.empname
-            }))
-            setassigneelabels(formattedData);
-            setAssignees(assigneeData);
-        } catch (error) {
-
-        } finally {
-            setLoading(false);
-        }
-    }
-    const handleFetchSprints = async () => {
-        try {
-            const response = await axiosInstance({
-                url: "/taskboard/get-sprints",
-                method: "GET",
-            })
-            const formattedData = response?.data?.results?.reduce((acc, result) => {
-                acc[result?.id] = result?.sprintname;
-                return acc;
-            }, {});
-            const sprintData = response?.data?.results?.map((result, index) => ({
-                id: result?.id,
-                label: result?.sprintname
-            }))
-            setsprintlabels(formattedData);
-            setsprints(sprintData);
-        } catch (error) {
-
-        } finally {
-            setLoading(false);
-        }
-    }
-    const handleUpdateIssue = async ({ key, value, issueid }) => {
-        try {
-            await axiosInstance({
-                url: "/taskboard/update-issue",
-                method: "POST",
-                data: { key: key, value: value, issueid: issueid }
-            })
-            handleFetchIssues();
-            handleFetchTasks();
-
-        } catch (error) {
-
-        } finally {
-            setLoading(false);
-        }
-    }
-
-    const handleCreateIssue = async ({ issuename, relversion, priority }) => {
-        setLoading(true);
-        try {
-            await axiosInstance({
-                url: "/taskboard/create-issue-wsprint",
-                method: "POST",
-                data: { issuename, relversion, priority, sprintid: data?.[0]?.sprintid }
-            })
-        } catch (error) {
-
-        } finally {
-            setOpen(false);
-            handleFetchIssues();
-            handleFetchTasks();
-        }
-    }
+    const [filteredTasks, setFilteredTasks] = useState([]);
+    const {
+        tasks,
+        loading,
+        setLoading,
+        fetchActiveSprintTasks,
+        fetchIssues,
+    } = useTaskboard();
+    const { personName, search } = useAssigneeFilter();
     const onDropTask = async (task, newStatus) => {
         try {
             await axiosInstance({
@@ -199,7 +86,8 @@ const TaskGrid = ({ id, label, data, handleFetchTasks }) => {
                 method: "POST",
                 data: { key: 'status', value: newStatus, issueid: task?.id }
             })
-            handleFetchIssues();
+            fetchIssues();
+            fetchActiveSprintTasks();
         } catch (error) {
 
         } finally {
@@ -207,18 +95,28 @@ const TaskGrid = ({ id, label, data, handleFetchTasks }) => {
         }
 
     };
-    useEffect(() => {
-        handleFetchIssues();
-        handleFetchSprints();
-        handleFetchEpics();
-        handleFetchAssignees();
-        handleFetchTasks();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
     const handleViewIssue = (task) => {
         setviewissuedata(task);
         setviewissue(true);
     };
+    useEffect(() => {
+        if (tasks) {
+            let filteredData = tasks;
+
+            if (personName.length > 0) {
+                filteredData = filteredData.filter(task => personName.includes(task.empid));
+            }
+
+            if (search) {
+                filteredData = filteredData.filter(task =>
+                    task.issuename?.toLowerCase().includes(search?.toLowerCase())
+                );
+            }
+
+            setFilteredTasks(filteredData);
+        }
+    }, [personName, tasks, search]);
+
     return (
         <Grid
             ref={drop}
@@ -226,7 +124,7 @@ const TaskGrid = ({ id, label, data, handleFetchTasks }) => {
             sx={{ bgcolor: "#091E420F", minHeight: "500px", borderRadius: "8px", padding: "10px", display: "flex", flexDirection: "column" }}
         >
             <Typography sx={{ fontSize: "12px", fontFamily: "montserrat", color: text.primary }}>{label}</Typography>
-            {data?.map((task, index) => (
+            {filteredTasks && filteredTasks?.map((task, index) => (
                 task?.status === id && (
                     <TaskCard
                         key={index}
@@ -237,24 +135,11 @@ const TaskGrid = ({ id, label, data, handleFetchTasks }) => {
                     />
                 )
             ))}
-            {id === 0 && (
-                <>
-                    <Button sx={{ textTransform: "none", marginTop: "10px", textAlign: "left", color: tabs.background }} onClick={() => setOpen(true)}>+ Create Issue</Button>
-                    {open && <CreateIssueDialog open={open} setOpen={setOpen} handleCreateIssue={handleCreateIssue} />}
-                </>
-            )}
             {viewissue && (
                 <ViewIssueDialog
                     open={viewissue}
                     setOpen={setviewissue}
                     data={viewissuedata}
-                    epics={epics}
-                    assignees={assignees}
-                    epiclabels={epiclabels}
-                    assigneelabels={assigneeLabels}
-                    handleUpdate={handleUpdateIssue}
-                    sprintlabels={sprintlabels}
-                    sprints={sprints}
                 />
             )}
             <Backdrop open={loading}>

@@ -5,8 +5,8 @@ import TaskListComponent from '../components/TaskListComponent'
 const ActiveSprintPage = () => {
   return (
     <div>
-        <ActiveSprintHeader/>
-        <TaskListComponent/>
+      <ActiveSprintHeader  />
+      <TaskListComponent />
     </div>
   )
 }

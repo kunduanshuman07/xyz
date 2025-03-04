@@ -1,8 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import Grid from "@mui/material/Grid2";
 import TaskGrid from "./TaskGrid";
-import { axiosInstance } from '../../hooks/useApiCall';
-import { Backdrop, CircularProgress } from '@mui/material';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
@@ -22,34 +20,13 @@ const items = [
 ]
 
 const TaskListComponent = () => {
-    const [tasks, setTasks] = useState([]);
-    const [loading, setloading] = useState(false);
-    const handleFetchIssues = async () => {
-        try {
-            const response = await axiosInstance({
-                url: "/taskboard/active-sprint-tasks",
-                method: "GET",
-            })
-            setTasks(response?.data?.results);
-        } catch (error) {
-
-        } finally {
-            setloading(false);
-        }
-    }
-    useEffect(() => {
-        handleFetchIssues();
-    }, [])
     return (
         <Grid sx={{ marginTop: "20px" }} container spacing={2}>
             {items?.map((x, index) => (
                 <DndProvider backend={HTML5Backend} key={index}>
-                    <TaskGrid label={x.label} key={index} id={x.id} data={tasks} handleFetchTasks={handleFetchIssues}/>
+                    <TaskGrid label={x.label} key={index} id={x.id} />
                 </DndProvider>
             ))}
-            <Backdrop open={loading}>
-                <CircularProgress sx={{ color: "white" }} />
-            </Backdrop>
         </Grid>
     )
 }

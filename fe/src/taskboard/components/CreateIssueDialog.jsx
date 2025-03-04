@@ -15,6 +15,10 @@ const CreateIssueDialog = ({ open, setOpen, handleCreateIssue }) => {
   const handleCloseDialog = () => {
     setOpen(false);
   }
+  const handleIssueCreation = ({ issuename, relversion, priority }) => {
+    handleCreateIssue({ issuename, relversion, priority });
+    handleCloseDialog();
+  }
   return (
     <Dialog maxWidth="md" fullWidth open={open} onClose={() => setOpen(false)}>
       <DialogTitle display='flex'>
@@ -96,7 +100,7 @@ const CreateIssueDialog = ({ open, setOpen, handleCreateIssue }) => {
             />
           </Grid>
         </Grid>
-        <Button variant='contained' sx={{ textTransform: "none", marginX: "auto", marginY: "20px", borderRadius: "8px", bgcolor: buttons.background }} onClick={() => handleCreateIssue({ issuename, relversion, priority })}>Create Issue</Button>
+        <Button variant='contained' sx={{ textTransform: "none", marginX: "auto", marginY: "20px", borderRadius: "8px", bgcolor: buttons.background }} onClick={() => handleIssueCreation({ issuename, relversion, priority })}>Create Issue</Button>
       </DialogContent>
     </Dialog >
   )
